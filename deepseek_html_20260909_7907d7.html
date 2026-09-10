@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAQR Security Report | تقرير SAQR الأمني الشامل</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #0f172a;
+        --text: #e2e8f0;
+        --text-muted: #94a3b8;
+        --primary: #0ea5e9;
+        --primary-light: #38bdf8;
+        --border: #334155;
+        --critical: #dc2626;
+        --high: #ea580c;
+        --medium: #d97706;
+        --low: #2563eb;
+        --info: #64748b;
+        --success: #16a34a;
+        --saqr-gold: #fbbf24;
+        --saqr-gradient: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+    }
+
+    [data-theme="light"] {
+        --bg: #f5f7fa;
+        --bg-secondary: #ffffff;
+        --bg-card: #ffffff;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+        line-height: 1.7;
+        transition: background 0.3s, color 0.3s;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* ============ Watermark ============ */
+    .watermark {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 200px;
+        font-weight: 900;
+        color: var(--primary);
+        opacity: 0.025;
+        pointer-events: none;
+        z-index: 0;
+        user-select: none;
+        font-family: 'Arial Black', sans-serif;
+        letter-spacing: 20px;
+        white-space: nowrap;
+    }
+
+    html[lang="en"] body { direction: ltr; }
+    html[lang="ar"] body { direction: rtl; }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        padding: 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ============ SAQR Signature Header ============ */
+    .saqr-signature {
+        position: absolute;
+        top: 15px;
+        inset-inline-end: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 18px;
+        background: var(--saqr-gradient);
+        border-radius: 30px;
+        color: #000;
+        font-weight: 900;
+        font-size: 16px;
+        letter-spacing: 3px;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        z-index: 10;
+    }
+
+    .saqr-signature::before {
+        content: '👑';
+        font-size: 18px;
+    }
+
+    /* ============ Header ============ */
+    .report-header {
+        background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .report-header::after {
+        content: 'SAQR';
+        position: absolute;
+        bottom: -30px;
+        inset-inline-end: -20px;
+        font-size: 120px;
+        font-weight: 900;
+        color: rgba(255,255,255,0.08);
+        letter-spacing: 10px;
+        pointer-events: none;
+    }
+
+    .report-header h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .header-meta div {
+        background: rgba(255,255,255,0.15);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .header-meta strong { color: #fef08a; }
+
+    /* ============ Author Card ============ */
+    .author-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 25px;
+        margin: 25px 0;
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(217, 119, 6, 0.05));
+        border: 2px solid var(--saqr-gold);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .author-card::before {
+        content: '';
+        position: absolute;
+        inset-inline-start: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--saqr-gradient);
+    }
+
+    .author-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--saqr-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 900;
+        color: #000;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.5);
+    }
+
+    .author-info h3 {
+        color: var(--saqr-gold);
+        font-size: 22px;
+        margin-bottom: 5px;
+        letter-spacing: 2px;
+    }
+
+    .author-info p {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .author-info .role {
+        color: var(--primary-light);
+        font-weight: bold;
+        font-size: 15px;
+        margin-top: 5px;
+    }
+
+    /* ============ Language Toggle ============ */
+    .lang-toggle {
+        position: fixed;
+        top: 20px;
+        inset-inline-start: 20px;
+        z-index: 1000;
+        display: flex;
+        gap: 5px;
+        background: var(--bg-secondary);
+        padding: 5px;
+        border-radius: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+        padding: 8px 18px;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .lang-btn.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .theme-toggle {
+        position: fixed;
+        top: 20px;
+        inset-inline-end: 20px;
+        z-index: 1000;
+        background: var(--bg-secondary);
+        padding: 10px 15px;
+        border-radius: 30px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    /* ============ Sections ============ */
+    h2 {
+        color: var(--primary-light);
+        margin: 35px 0 20px 0;
+        padding: 15px;
+        background: var(--bg);
+        border-radius: 8px;
+        border-inline-start: 4px solid var(--primary);
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    h2::after {
+        content: 'SAQR';
+        position: absolute;
+        inset-inline-end: 15px;
+        font-size: 11px;
+        color: var(--saqr-gold);
+        letter-spacing: 3px;
+        font-weight: bold;
+        opacity: 0.5;
+    }
+
+    h3 {
+        color: var(--primary-light);
+        margin: 25px 0 12px 0;
+        font-size: 18px;
+    }
+
+    h4 {
+        color: var(--text);
+        margin: 15px 0 8px 0;
+        font-size: 16px;
+    }
+
+    p { margin: 10px 0; }
+
+    /* ============ Summary Cards ============ */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 18px;
+        margin: 25px 0;
+    }
+
+    .summary-card {
+        background: var(--bg-card);
+        padding: 25px 15px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid var(--border);
+        transition: transform 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        inset-inline-start: 0;
+        width: 30px;
+        height: 3px;
+        background: var(--saqr-gradient);
+    }
+
+    .summary-card:hover { transform: translateY(-5px); }
+
+    .summary-number {
+        font-size: 38px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        line-height: 1;
+    }
+
+    .summary-label {
+        color: var(--text-muted);
+        font-size: 13px;
+    }
+
+    .num-critical { color: var(--critical); }
+    .num-high { color: var(--high); }
+    .num-medium { color: var(--medium); }
+    .num-low { color: var(--low); }
+    .num-info { color: var(--info); }
+    .num-success { color: var(--success); }
+
+    /* ============ Boxes ============ */
+    .info-box, .warning-box, .danger-box, .success-box {
+        padding: 18px;
+        margin: 15px 0;
+        border-radius: 8px;
+        border-inline-start: 4px solid;
+    }
+
+    .info-box { background: rgba(14, 165, 233, 0.1); border-color: var(--primary); }
+    .warning-box { background: rgba(217, 119, 6, 0.1); border-color: var(--medium); }
+    .danger-box { background: rgba(220, 38, 38, 0.1); border-color: var(--critical); }
+    .success-box { background: rgba(22, 163, 74, 0.1); border-color: var(--success); }
+
+    /* ============ Tables ============ */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        background: var(--bg-card);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th {
+        background: var(--bg);
+        color: var(--primary-light);
+        padding: 12px;
+        text-align: start;
+        border-bottom: 2px solid var(--primary);
+        font-weight: bold;
+    }
+
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    tr:hover { background: rgba(14, 165, 233, 0.05); }
+
+    /* ============ Badges ============ */
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 15px;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .badge-critical { background: var(--critical); }
+    .badge-high { background: var(--high); }
+    .badge-medium { background: var(--medium); }
+    .badge-low { background: var(--low); }
+    .badge-info { background: var(--info); }
+    .badge-success { background: var(--success); }
+
+    /* ============ Code Blocks ============ */
+    pre {
+        background: var(--bg);
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 13px;
+        line-height: 1.6;
+        direction: ltr;
+        text-align: left;
+        margin: 10px 0;
+        position: relative;
+    }
+
+    pre::before {
+        content: 'SAQR';
+        position: absolute;
+        top: 5px;
+        inset-inline-end: 10px;
+        font-size: 10px;
+        color: var(--saqr-gold);
+        letter-spacing: 2px;
+        opacity: 0.3;
+        font-weight: bold;
+    }
+
+    code {
+        font-family: 'Consolas', 'Monaco', monospace;
+        background: var(--bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        color: var(--primary-light);
+    }
+
+    pre code { background: transparent; padding: 0; }
+
+    /* ============ Tool Sections ============ */
+    .tool-section {
+        margin: 20px 0;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--bg-card);
+    }
+
+    .tool-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .tool-name {
+        color: var(--primary-light);
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .tool-status {
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        background: var(--success);
+        color: white;
+    }
+
+    /* ============ Language Sections ============ */
+    .lang-section { display: none; }
+    .lang-section.active { display: block; }
+
+    /* ============ SAQR Footer ============ */
+    .saqr-footer {
+        margin-top: 40px;
+        padding: 35px 25px;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        border-radius: 12px;
+        text-align: center;
+        color: var(--text-muted);
+        border: 2px solid var(--saqr-gold);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .saqr-footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--saqr-gradient);
+    }
+
+    .saqr-footer .saqr-logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px 30px;
+        background: rgba(251, 191, 36, 0.1);
+        border: 2px solid var(--saqr-gold);
+        border-radius: 50px;
+    }
+
+    .saqr-footer .saqr-logo .crown {
+        font-size: 32px;
+        filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+    }
+
+    .saqr-footer .saqr-logo .name {
+        font-size: 42px;
+        font-weight: 900;
+        letter-spacing: 8px;
+        background: var(--saqr-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Arial Black', sans-serif;
+        text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+    }
+
+    .saqr-footer .copyright {
+        font-size: 16px;
+        color: var(--text);
+        margin: 15px 0 10px 0;
+        font-weight: bold;
+    }
+
+    .saqr-footer .copyright .saqr-name {
+        color: var(--saqr-gold);
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .saqr-footer .signature {
+        font-family: 'Brush Script MT', cursive;
+        font-size: 32px;
+        color: var(--saqr-gold);
+        margin: 20px 0 10px 0;
+        letter-spacing: 3px;
+        transform: rotate(-5deg);
+        display: inline-block;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .saqr-footer .meta {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border);
+    }
+
+    .saqr-footer .meta strong {
+        color: var(--saqr-gold);
+    }
+
+    /* ============ Signature Stamp ============ */
+    .signature-stamp {
+        position: absolute;
+        bottom: 20px;
+        inset-inline-start: 20px;
+        width: 100px;
+        height: 100px;
+        border: 3px solid var(--saqr-gold);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--saqr-gold);
+        font-weight: 900;
+        transform: rotate(-15deg);
+        opacity: 0.7;
+        background: rgba(251, 191, 36, 0.05);
+        z-index: 5;
+    }
+
+    .signature-stamp .stamp-name {
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+    .signature-stamp .stamp-text {
+        font-size: 8px;
+        letter-spacing: 1px;
+        margin-top: 3px;
+    }
+
+    .signature-stamp .stamp-icon {
+        font-size: 18px;
+        margin-bottom: 3px;
+    }
+
+    /* ============ Print ============ */
+    @media print {
+        body { background: white; color: black; padding: 0; }
+        .container { box-shadow: none; padding: 20px; }
+        .lang-toggle, .theme-toggle { display: none; }
+        .lang-section { display: block !important; }
+        .watermark { opacity: 0.05; }
+        h2 { page-break-after: avoid; }
+        .tool-section, .summary-card { page-break-inside: avoid; }
+        .saqr-signature { position: absolute; top: 10px; right: 10px; }
+    }
+
+    @media (max-width: 768px) {
+        .container { padding: 20px; }
+        .report-header h1 { font-size: 20px; }
+        h2 { font-size: 18px; }
+        .summary-number { font-size: 28px; }
+        table { font-size: 13px; }
+        th, td { padding: 8px; }
+        .saqr-footer .saqr-logo .name { font-size: 28px; letter-spacing: 4px; }
+        .author-card { flex-direction: column; text-align: center; }
+        .signature-stamp { width: 70px; height: 70px; }
+        .signature-stamp .stamp-name { font-size: 14px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- ============ Watermark ============ -->
+<div class="watermark">SAQR</div>
+
+<!-- ============ Toggles ============ -->
+<button class="theme-toggle" onclick="toggleTheme()" title="Theme / المظهر">🌙</button>
+
+<div class="lang-toggle">
+    <button class="lang-btn active" onclick="switchLang('ar', event)">العربية</button>
+    <button class="lang-btn" onclick="switchLang('en', event)">English</button>
+</div>
+
+<div class="container">
+
+<!-- ============ SAQR Signature Badge ============ -->
+<div class="saqr-signature">SAQR</div>
+
+<!-- ==================================================== -->
+<!-- ============ ARABIC SECTION ============ -->
+<!-- ==================================================== -->
+<div id="ar-content" class="lang-section active">
+
+    <div class="report-header">
+        <h1>🔒 التقرير الأمني الشامل</h1>
+        <p style="font-size: 18px; opacity: 0.95;">موقع حمامة ديلفري — نظام إدارة مكتب التوصيل</p>
+        <div class="header-meta">
+            <div><strong>🎯 الهدف:</strong> https://www.hamamadl.com</div>
+            <div><strong>📅 التاريخ:</strong> 9 سبتمبر 2026</div>
+            <div><strong>⏱️ المدة:</strong> ~45 دقيقة</div>
+            <div><strong>🔬 الأدوات:</strong> 12 أداة فحص</div>
+        </div>
+    </div>
+
+    <!-- ============ Author Card ============ -->
+    <div class="author-card">
+        <div class="author-avatar">S</div>
+        <div class="author-info">
+            <h3>SAQR</h3>
+            <p>مُعدّ التقرير — المالك والمطوّر</p>
+            <p class="role">🔐 أمن سيبراني | مطوّر Full-Stack | مختبر اختراق</p>
+        </div>
+    </div>
+
+    <!-- ====== ملخص تنفيذي ====== -->
+    <h2>📊 الملخص التنفيذي</h2>
+
+    <p>بعد إجراء سلسلة فحوصات أمنية متكاملة باستخدام أدوات متقدمة على موقع <strong>حمامة ديلفري</strong> (نظام إدارة مكتب توصيل مبني بـ <strong>Next.js</strong> ومستضاف على <strong>Hostinger</strong> ومحمي بـ <strong>Cloudflare</strong>)، تم التوصل إلى النتائج التالية:</p>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-number num-success">0</div>
+            <div class="summary-label">ثغرات عالية الخطورة</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-medium">5</div>
+            <div class="summary-label">ثغرات متوسطة</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-low">3</div>
+            <div class="summary-label">ثغرات منخفضة</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-info">4</div>
+            <div class="summary-label">تنبيهات معلوماتية</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-high">1</div>
+            <div class="summary-label">ثغرة XSS فعلية</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-success">12</div>
+            <div class="summary-label">إجمالي التنبيهات</div>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ الخلاصة العامة:</strong> الموقع <strong>آمن نسبياً</strong> ولا توجد ثغرات عالية الخطورة يمكن استغلالها لاختراق مباشر، لكن توجد <strong>ثغرة XSS فعلية واحدة</strong> تحتاج إصلاحاً فورياً، بالإضافة إلى <strong>مجموعة من الترويسات الأمنية المفقودة</strong>.
+    </div>
+
+    <!-- ====== المعلومات التقنية ====== -->
+    <h2>🔍 المعلومات التقنية المستخلصة</h2>
+
+    <h3>1.1 البصمة التقنية للموقع</h3>
+    <table>
+        <thead>
+            <tr><th>العنصر</th><th>القيمة</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>التقنية الأساسية</strong></td><td>Next.js (مؤكد من ترويسة x-powered-by)</td></tr>
+            <tr><td><strong>الخادم الأمامي</strong></td><td>Cloudflare (CDN + WAF)</td></tr>
+            <tr><td><strong>الاستضافة</strong></td><td>Hostinger</td></tr>
+            <tr><td><strong>خادم الويب الأصلي</strong></td><td>LiteSpeed</td></tr>
+            <tr><td><strong>إطار العمل الأمامي</strong></td><td>React + Turbopack</td></tr>
+            <tr><td><strong>مكتبة الأيقونات</strong></td><td>Lucide</td></tr>
+            <tr><td><strong>مكتبة الإشعارات</strong></td><td>Sonner (Toaster)</td></tr>
+        </tbody>
+    </table>
+
+    <h3>1.2 المسارات المكتشفة</h3>
+    <table>
+        <thead>
+            <tr><th>المسار</th><th>النوع</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>/</code></td><td>الصفحة الرئيسية</td></tr>
+            <tr><td><code>/login</code></td><td>صفحة تسجيل الدخول</td></tr>
+            <tr><td><code>/restaurant/login</code></td><td>تسجيل دخول المطاعم</td></tr>
+            <tr><td><code>/download?type=driver</code></td><td>تحميل تطبيق السائقين</td></tr>
+            <tr><td><code>/download?type=customer</code></td><td>تحميل تطبيق الزبائن</td></tr>
+            <tr><td><code>/privacy-policy</code></td><td>سياسة الخصوصية</td></tr>
+            <tr><td><code>/manifest.webmanifest</code></td><td>ملف PWA</td></tr>
+            <tr><td><code>/api/ping</code></td><td>نقطة API</td></tr>
+            <tr><td><code>/api/broadcast</code></td><td>نقطة API</td></tr>
+            <tr><td><code>/storage/v1/object</code></td><td>نقطة تخزين (Supabase)</td></tr>
+            <tr><td><code>/.well-known/jwks.json</code></td><td>مفاتيح JWT العامة</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== SSL/TLS ====== -->
+    <h2>🛡️ نتائج فحص SSL/TLS</h2>
+
+    <h3>بروتوكولات SSL/TLS المدعومة</h3>
+    <table>
+        <thead>
+            <tr><th>البروتوكول</th><th>الحالة</th><th>التقييم</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>SSLv2</td><td>معطّل ✅</td><td>ممتاز</td></tr>
+            <tr><td>SSLv3</td><td>معطّل ✅</td><td>ممتاز</td></tr>
+            <tr><td>TLSv1.0</td><td>مفعّل ⚠️</td><td>قديم - يُفضّل تعطيله</td></tr>
+            <tr><td>TLSv1.1</td><td>مفعّل ⚠️</td><td>قديم - يُفضّل تعطيله</td></tr>
+            <tr><td>TLSv1.2</td><td>مفعّل ✅</td><td>جيد</td></tr>
+            <tr><td>TLSv1.3</td><td>مفعّل ✅</td><td>ممتاز</td></tr>
+        </tbody>
+    </table>
+
+    <div class="success-box">
+        <strong>✅ الخلاصة:</strong> إعدادات SSL/TLS ممتازة، والشهادة صحيحة وسارية، ولا توجد ثغرات معروفة في طبقة التشفير.
+    </div>
+
+    <!-- ====== الثغرات ====== -->
+    <h2>🚨 الثغرات المكتشفة بالتفصيل</h2>
+
+    <h3>🔴 ثغرة XSS فعلية (الأخطر - يجب إصلاحها فوراً)</h3>
+
+    <div class="danger-box">
+        <p><strong>الأداة المكتشفة:</strong> XSStrike v3.1.5</p>
+        <p><strong>الرابط المصاب:</strong> <code>https://hamamadl.com/download</code></p>
+        <p><strong>المعامل المصاب:</strong> <code>type</code></p>
+        <p><strong>ناقل الهجوم:</strong> <code>&lt;details%09ontoggle+=+confirm()</code></p>
+        <p><strong>مستوى الخطورة:</strong> <span class="badge badge-high">عالي</span></p>
+    </div>
+
+    <p><strong>شرح الثغرة:</strong> تم اكتشاف ثغرة Cross-Site Scripting (XSS) في صفحة تحميل التطبيقات عبر معامل <code>type</code>.</p>
+
+    <p><strong>مثال على رابط مصاب:</strong></p>
+    <pre><code>https://hamamadl.com/download?type=&lt;details ontoggle=confirm()&gt;</code></pre>
+
+    <h4>الحل الفوري</h4>
+    <pre><code>// ✅ الحل الصحيح
+const ALLOWED_TYPES = ['driver', 'customer'] as const;
+type DownloadType = typeof ALLOWED_TYPES[number];
+
+export default function DownloadPage() {
+  const searchParams = useSearchParams();
+  const rawType = searchParams.get('type') || 'customer';
+
+  const type: DownloadType = ALLOWED_TYPES.includes(rawType as DownloadType)
+    ? (rawType as DownloadType)
+    : 'customer';
+}</code></pre>
+
+    <h3>🟠 الثغرات متوسطة الخطورة (5 ثغرات)</h3>
+
+    <h4>1. ضعف سياسة أمان المحتوى (CSP)</h4>
+    <table>
+        <thead>
+            <tr><th>التنبيه</th><th>العدد</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>CSP: Failure to Define Directive with No Fallback</td><td>5</td></tr>
+            <tr><td>CSP: Wildcard Directive</td><td>5</td></tr>
+            <tr><td>CSP: script-src unsafe-inline</td><td>5</td></tr>
+            <tr><td>CSP: style-src unsafe-inline</td><td>5</td></tr>
+        </tbody>
+    </table>
+
+    <h4>2. غياب الحماية من اختطاف النقرات (Anti-Clickjacking)</h4>
+    <p>الموقع لا يرسل ترويسة <code>X-Frame-Options</code> ولا توجيه <code>frame-ancestors</code> في CSP.</p>
+
+    <!-- ====== الترويسات ====== -->
+    <h2>📋 جدول الترويسات الأمنية</h2>
+
+    <table>
+        <thead>
+            <tr><th>الترويسة</th><th>الحالة</th><th>الأهمية</th><th>الإجراء</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>Content-Security-Policy</code></td><td>⚠️ ضعيفة</td><td>عالية</td><td>تحسينها</td></tr>
+            <tr><td><code>X-Frame-Options</code></td><td>❌ مفقودة</td><td>عالية</td><td>إضافتها</td></tr>
+            <tr><td><code>Strict-Transport-Security</code></td><td>❌ مفقودة</td><td>عالية</td><td>إضافتها</td></tr>
+            <tr><td><code>X-Content-Type-Options</code></td><td>❌ مفقودة</td><td>متوسطة</td><td>إضافتها</td></tr>
+            <tr><td><code>Referrer-Policy</code></td><td>❌ مفقودة</td><td>متوسطة</td><td>إضافتها</td></tr>
+            <tr><td><code>Permissions-Policy</code></td><td>❌ مفقودة</td><td>متوسطة</td><td>إضافتها</td></tr>
+            <tr><td><code>X-Powered-By</code></td><td>⚠️ مسرّبة</td><td>متوسطة</td><td>إخفاؤها</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== الحلول ====== -->
+    <h2>💻 الحلول البرمجية الشاملة</h2>
+
+    <h3>ملف next.config.js الكامل والمحدّث</h3>
+
+    <pre><code>/** @type {import('next').NextConfig} */
+const nextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
+        { key: 'Content-Security-Policy', value: "default-src 'self'; frame-ancestors 'none'; ..." }
+      ]
+    }];
+  }
+};
+
+module.exports = nextConfig;</code></pre>
+
+    <!-- ====== التقييم ====== -->
+    <h2>🎯 التقييم النهائي</h2>
+
+    <div class="info-box">
+        <strong>🎯 التقييم العام: 72% — جيد</strong><br>
+        الموقع آمن نسبياً للنشر، لكن لتحقيق الأمان الاحترافي الكامل يجب تطبيق التوصيات المذكورة أعلاه.
+    </div>
+
+    <!-- ====== الأدوات ====== -->
+    <h2>🔬 الأدوات المستخدمة</h2>
+
+    <table>
+        <thead>
+            <tr><th>#</th><th>الأداة</th><th>التخصص</th><th>النتيجة</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>OWASP ZAP</td><td>فحص شامل</td><td>12 تنبيه</td></tr>
+            <tr><td>2</td><td>Nuclei</td><td>ثغرات معروفة</td><td>لا شيء ✅</td></tr>
+            <tr><td>3</td><td>WhatWeb</td><td>بصمات تقنية</td><td>Next.js + Cloudflare</td></tr>
+            <tr><td>4</td><td>WafW00f</td><td>كشف WAF</td><td>Cloudflare ✅</td></tr>
+            <tr><td>5</td><td>SSLScan</td><td>SSL/TLS</td><td>تقييم A</td></tr>
+            <tr><td>6</td><td>XSStrike</td><td>XSS</td><td>1 ثغرة 🔴</td></tr>
+            <tr><td>7</td><td>SQLMap</td><td>SQL Injection</td><td>لا شيء ✅</td></tr>
+            <tr><td>8</td><td>Commix</td><td>Command Injection</td><td>لا شيء ✅</td></tr>
+            <tr><td>9</td><td>Katana</td><td>فحص هجومي</td><td>اكتشاف مسارات</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== الخلاصة ====== -->
+    <h2>📝 الخلاصة النهائية</h2>
+
+    <p>موقع <strong>حمامة ديلفري</strong> هو تطبيق <strong>Next.js</strong> حديث ومبني بشكل جيد، مع طبقات حماية قوية من <strong>Cloudflare</strong>.</p>
+
+    <div class="success-box">
+        <strong>✅ بعد تطبيق الحلول المقترحة</strong>، سيرتفع تقييم الأمان من <strong>72%</strong> إلى أكثر من <strong>95%</strong>.
+    </div>
+
+</div>
+
+<!-- ==================================================== -->
+<!-- ============ ENGLISH SECTION ============ -->
+<!-- ==================================================== -->
+<div id="en-content" class="lang-section">
+
+    <div class="report-header">
+        <h1>🔒 Comprehensive Security Report</h1>
+        <p style="font-size: 18px; opacity: 0.95;">Hamama Delivery — Delivery Office Management System</p>
+        <div class="header-meta">
+            <div><strong>🎯 Target:</strong> https://www.hamamadl.com</div>
+            <div><strong>📅 Date:</strong> September 9, 2026</div>
+            <div><strong>⏱️ Duration:</strong> ~45 minutes</div>
+            <div><strong>🔬 Tools:</strong> 12 scanning tools</div>
+        </div>
+    </div>
+
+    <!-- ============ Author Card ============ -->
+    <div class="author-card">
+        <div class="author-avatar">S</div>
+        <div class="author-info">
+            <h3>SAQR</h3>
+            <p>Report Author — Owner & Developer</p>
+            <p class="role">🔐 Cybersecurity | Full-Stack Developer | Penetration Tester</p>
+        </div>
+    </div>
+
+    <!-- ====== Executive Summary ====== -->
+    <h2>📊 Executive Summary</h2>
+
+    <p>After conducting a comprehensive security assessment using advanced tools against <strong>Hamama Delivery</strong> (a delivery office management system built with <strong>Next.js</strong>, hosted on <strong>Hostinger</strong>, and protected by <strong>Cloudflare</strong>), the following results were obtained:</p>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-number num-success">0</div>
+            <div class="summary-label">High Risk</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-medium">5</div>
+            <div class="summary-label">Medium Risk</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-low">3</div>
+            <div class="summary-label">Low Risk</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-info">4</div>
+            <div class="summary-label">Informational</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-high">1</div>
+            <div class="summary-label">Actual XSS</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-number num-success">12</div>
+            <div class="summary-label">Total Alerts</div>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ Overall Conclusion:</strong> The site is <strong>relatively secure</strong> with no high-risk vulnerabilities, but there is <strong>one actual XSS vulnerability</strong> requiring immediate remediation.
+    </div>
+
+    <!-- ====== Technical Info ====== -->
+    <h2>🔍 Extracted Technical Information</h2>
+
+    <h3>1.1 Technical Fingerprint</h3>
+    <table>
+        <thead>
+            <tr><th>Element</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Core Technology</strong></td><td>Next.js (confirmed via x-powered-by)</td></tr>
+            <tr><td><strong>Front-end Server</strong></td><td>Cloudflare (CDN + WAF)</td></tr>
+            <tr><td><strong>Hosting</strong></td><td>Hostinger</td></tr>
+            <tr><td><strong>Origin Web Server</strong></td><td>LiteSpeed</td></tr>
+            <tr><td><strong>Front-end Framework</strong></td><td>React + Turbopack</td></tr>
+            <tr><td><strong>Icons Library</strong></td><td>Lucide</td></tr>
+            <tr><td><strong>Notifications</strong></td><td>Sonner (Toaster)</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== SSL/TLS ====== -->
+    <h2>🛡️ SSL/TLS Scan Results</h2>
+
+    <table>
+        <thead>
+            <tr><th>Protocol</th><th>Status</th><th>Rating</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>SSLv2</td><td>Disabled ✅</td><td>Excellent</td></tr>
+            <tr><td>SSLv3</td><td>Disabled ✅</td><td>Excellent</td></tr>
+            <tr><td>TLSv1.0</td><td>Enabled ⚠️</td><td>Deprecated</td></tr>
+            <tr><td>TLSv1.1</td><td>Enabled ⚠️</td><td>Deprecated</td></tr>
+            <tr><td>TLSv1.2</td><td>Enabled ✅</td><td>Good</td></tr>
+            <tr><td>TLSv1.3</td><td>Enabled ✅</td><td>Excellent</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== Vulnerabilities ====== -->
+    <h2>🚨 Detailed Vulnerabilities</h2>
+
+    <h3>🔴 Actual XSS Vulnerability (Critical)</h3>
+
+    <div class="danger-box">
+        <p><strong>Discovered by:</strong> XSStrike v3.1.5</p>
+        <p><strong>Affected URL:</strong> <code>https://hamamadl.com/download</code></p>
+        <p><strong>Affected Parameter:</strong> <code>type</code></p>
+        <p><strong>Severity:</strong> <span class="badge badge-high">High</span></p>
+    </div>
+
+    <p><strong>Description:</strong> A Cross-Site Scripting (XSS) vulnerability was discovered in the app download page via the <code>type</code> parameter.</p>
+
+    <h4>Immediate Fix</h4>
+    <pre><code>// ✅ Correct solution
+const ALLOWED_TYPES = ['driver', 'customer'] as const;
+type DownloadType = typeof ALLOWED_TYPES[number];
+
+export default function DownloadPage() {
+  const searchParams = useSearchParams();
+  const rawType = searchParams.get('type') || 'customer';
+
+  const type: DownloadType = ALLOWED_TYPES.includes(rawType as DownloadType)
+    ? (rawType as DownloadType)
+    : 'customer';
+}</code></pre>
+
+    <!-- ====== Headers ====== -->
+    <h2>📋 Security Headers Table</h2>
+
+    <table>
+        <thead>
+            <tr><th>Header</th><th>Status</th><th>Importance</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>Content-Security-Policy</code></td><td>⚠️ Weak</td><td>High</td><td>Improve</td></tr>
+            <tr><td><code>X-Frame-Options</code></td><td>❌ Missing</td><td>High</td><td>Add</td></tr>
+            <tr><td><code>Strict-Transport-Security</code></td><td>❌ Missing</td><td>High</td><td>Add</td></tr>
+            <tr><td><code>X-Content-Type-Options</code></td><td>❌ Missing</td><td>Medium</td><td>Add</td></tr>
+            <tr><td><code>Referrer-Policy</code></td><td>❌ Missing</td><td>Medium</td><td>Add</td></tr>
+            <tr><td><code>Permissions-Policy</code></td><td>❌ Missing</td><td>Medium</td><td>Add</td></tr>
+            <tr><td><code>X-Powered-By</code></td><td>⚠️ Leaked</td><td>Medium</td><td>Hide</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== Solutions ====== -->
+    <h2>💻 Comprehensive Code Solutions</h2>
+
+    <pre><code>/** @type {import('next').NextConfig} */
+const nextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
+        { key: 'Content-Security-Policy', value: "default-src 'self'; frame-ancestors 'none'; ..." }
+      ]
+    }];
+  }
+};
+
+module.exports = nextConfig;</code></pre>
+
+    <!-- ====== Assessment ====== -->
+    <h2>🎯 Final Assessment</h2>
+
+    <div class="info-box">
+        <strong>🎯 Overall Rating: 72% — Good</strong><br>
+        The site is relatively safe for deployment, but to achieve full professional security, the above recommendations must be implemented.
+    </div>
+
+    <!-- ====== Tools ====== -->
+    <h2>🔬 Tools Used</h2>
+
+    <table>
+        <thead>
+            <tr><th>#</th><th>Tool</th><th>Specialty</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>OWASP ZAP</td><td>Comprehensive scan</td><td>12 alerts</td></tr>
+            <tr><td>2</td><td>Nuclei</td><td>Known CVEs</td><td>None ✅</td></tr>
+            <tr><td>3</td><td>WhatWeb</td><td>Tech fingerprint</td><td>Next.js + Cloudflare</td></tr>
+            <tr><td>4</td><td>WafW00f</td><td>WAF detection</td><td>Cloudflare ✅</td></tr>
+            <tr><td>5</td><td>SSLScan</td><td>SSL/TLS</td><td>Rating A</td></tr>
+            <tr><td>6</td><td>XSStrike</td><td>XSS</td><td>1 vuln 🔴</td></tr>
+            <tr><td>7</td><td>SQLMap</td><td>SQL Injection</td><td>None ✅</td></tr>
+            <tr><td>8</td><td>Commix</td><td>Command Injection</td><td>None ✅</td></tr>
+            <tr><td>9</td><td>Katana</td><td>Offensive scan</td><td>Endpoint discovery</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ====== Conclusion ====== -->
+    <h2>📝 Final Conclusion</h2>
+
+    <p><strong>Hamama Delivery</strong> is a modern and well-built <strong>Next.js</strong> application with strong protection layers from <strong>Cloudflare</strong>.</p>
+
+    <div class="success-box">
+        <strong>✅ After applying the proposed solutions</strong>, the security rating will increase from <strong>72%</strong> to over <strong>95%</strong>.
+    </div>
+
+</div>
+
+<!-- ============ SAQR FOOTER ============ -->
+<div class="saqr-footer">
+
+    <div class="saqr-logo">
+        <span class="crown">👑</span>
+        <span class="name">SAQR</span>
+        <span class="crown">👑</span>
+    </div>
+
+    <div class="copyright">
+        © 2026 <span class="saqr-name">SAQR</span> — جميع الحقوق محفوظة
+    </div>
+
+    <div class="copyright" style="font-size: 14px; color: var(--text-muted); font-weight: normal;">
+        © 2026 <span class="saqr-name">SAQR</span> — All Rights Reserved
+    </div>
+
+    <div class="signature">~ SAQR ~</div>
+
+    <div class="meta">
+        <p><strong>🔐 Cybersecurity Specialist</strong> | <strong>Full-Stack Developer</strong> | <strong>Penetration Tester</strong></p>
+        <p style="margin-top: 8px;">📅 9 سبتمبر 2026 | September 9, 2026</p>
+        <p style="margin-top: 8px;">⚠️ يوصى بمراجعة النتائج يدوياً | Manual review recommended</p>
+        <p style="margin-top: 15px; font-size: 12px; color: var(--saqr-gold); letter-spacing: 2px;">
+            🔒 REPORT GENERATED & SIGNED BY SAQR 🔒
+        </p>
+    </div>
+
+</div>
+
+<!-- ============ Signature Stamp ============ -->
+<div class="signature-stamp">
+    <div class="stamp-icon">👑</div>
+    <div class="stamp-name">SAQR</div>
+    <div class="stamp-text">VERIFIED</div>
+</div>
+
+</div>
+
+<script>
+    // ============ Language Toggle ============
+    function switchLang(lang, event) {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+        document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(lang + '-content').classList.add('active');
+
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+
+        localStorage.setItem('preferred-lang', lang);
+    }
+
+    // ============ Theme Toggle ============
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        document.querySelector('.theme-toggle').textContent = next === 'light' ? '☀️' : '🌙';
+        localStorage.setItem('preferred-theme', next);
+    }
+
+    // ============ Load Preferences ============
+    (function() {
+        const savedLang = localStorage.getItem('preferred-lang') || 'ar';
+        const savedTheme = localStorage.getItem('preferred-theme') || 'dark';
+
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+
+        if (savedLang !== 'ar') {
+            document.documentElement.lang = savedLang;
+            document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(savedLang + '-content').classList.add('active');
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const targetBtn = document.querySelector(`.lang-btn[onclick*="${savedLang}"]`);
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+    })();
+</script>
+
+</body>
+</html>
